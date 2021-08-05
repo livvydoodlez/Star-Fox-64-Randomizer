@@ -113,7 +113,7 @@ playerStage = 0
 local ticked = 0
 
 
-function getTheFuckOutOfA6andBolse()
+function getRandomAfterTank()
     if oldStage == pMac then
         aPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pTit, pAqu, pFor, pKat, pSez}
         randomPlanet = tonumber(aPlanets[math.random(#aPlanets)])
@@ -547,7 +547,7 @@ while true do
                         memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
                     end
                     if setOverride == 1 then
-                        getTheFuckOutOfA6andBolse()
+                        getRandomAfterTank()
                         memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
                     end
                     if endGame == 1 then
@@ -615,7 +615,7 @@ while true do
     --newMessage = pCount
     --newMessage = "Expert mode: " ..getExpert
     --newMessage = "Ticked: " ..ticked.. " Next Stage: " ..randomPlanet.. " pCount: " ..pCount.. " PS1: " ..playerState1.. " PS2: " ..playerState2.. " Set Overide: " ..setOverride
-    newMessage = "Old Stage: " ..oldStage.. " Next Stage: " ..randomPlanet.. " Actual Stage: " ..playerStage.. " Set Override: " ..setOverride.. " pCount: " ..pCount.. " End Game: " ..endGame
+    --newMessage = "Old Stage: " ..oldStage.. " Next Stage: " ..randomPlanet.. " Actual Stage: " ..playerStage.. " Set Override: " ..setOverride.. " pCount: " ..pCount.. " End Game: " ..endGame
 	gui.text(0,0,newMessage)
 	emu.frameadvance()
 end

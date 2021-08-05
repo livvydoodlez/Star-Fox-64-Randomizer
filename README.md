@@ -11,9 +11,9 @@ Author: Livvydoodlez
 
 Social Media:
 
-  Twitter:  https://twitter.com/livvydoodlez
-  Twitch:   https://twitch.tv/livvydoodlez
-  Discord:  Livvy#2986
+  1. Twitter:  https://twitter.com/livvydoodlez
+  2. Twitch:   https://twitch.tv/livvydoodlez
+  3. Discord:  Livvy#2986
   
  REQUIREMENTS:
  

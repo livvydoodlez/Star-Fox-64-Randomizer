@@ -28,3 +28,6 @@ Social Media:
   7. Click the Script drop down menu, and open script: Randomizer.lua
   8. Double click script, OR make sure there is a green play button next to the Randomizer.lua
   9. Play the game in full level randomization!
+
+
+THIS SOFTWARE IS RELEASED UNDER THE MIT LICENSE

@@ -1,5 +1,8 @@
 # Star-Fox-64-Randomizer
 
+VERSION: Beta 3
+
+
 About software:
 
 Star Fox 64: Randomizer, is the first randomizer for Star Fox 64. Star Fox 64: Randomizer will randomize your planet path to venom, change the portraits of who is speaking, change power ups that drop from enemies, and more!

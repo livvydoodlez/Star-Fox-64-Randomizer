@@ -1,621 +1,979 @@
 gui.addmessage("Star Fox 64: Randomizer is Active! Progam made by: Livvydoodlez")
-
-
---Change the below from a 0 to a 1 to enable the features.
-
+--Configuration settings
 
 
 --Enables training mode in RNG
 enable_impossible_planets = 0
+
 --Enables ending stages like bolse, venom, and area 6 in the RNG table
 enable_ending_stages = 0
---Enables a long venom route ( NOT IN BETA 3)
+
+--Enables a long venom route [NOT WORKING BETA 4]
 enable_long_venom = 0
+
 --Enables randomized Expert Mode
 enable_expert_mode = 0
---Enable early mothership on Katina ( NOT IN BETA 3)
+
+--Enable early mothership on Katina [NOT WORKING BETA 4]
 enable_early_katina = 0
---enable randomization at start before corneria (NOT IN BETA 3)
+
+--enable randomization at start before corneria
 enable_early_randomization = 0
 
+--randomizes the planets to allow you to go back to levels you already completed
+enable_repeatable_levels = 0
+
+--Adds star wolf to Katina
+enable_star_wolf_katina = 0
 
 
 
 
 
 
+--Variable settings, do not change
+local debugMode = 1
 
+--Stage IDs
+local pCor = 0
+local pMet = 1
+local pSeX = 2
+local pAr6 = 3
+local pSeY = 5
+local pVe1 = 6
+local pSol = 7
+local pZon = 8
+local pV1T = 9
+local pTra = 10
+local pMac = 11
+local pTit = 12
+local pAqu = 13
+local pFor = 14
+local pKat = 16
+local pBol = 17
+local pSeZ = 18
+local pVe2 = 19
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- DO NOT CHANGE ANY SETTINGS BEYOND THIS POINT!
-
-pCor = 0
-pMet = 1
-pSeX = 2
-pAr6 = 3
-pSeY = 5
-pVe1 = 6
-pSol = 7
-pZon = 8
-pV1T = 9
-pTra = 10
-pMac = 11
-pTit = 12
-pAqu = 13
-pFor = 14
-pKat = 16
-pBol = 17
-pSeZ = 18
-pVe2 = 19
-
-local expertMode = {0, 1}
-local getExpert = 0
-local setOverride = 0
-
-if enable_expert_mode == 1 then
-    getExpert = tonumber(expertMode[math.random(#expertMode)])
-end
-
+--Solar System Information
+local pCount = 0
 local oldStage = 0
-local getNew = 0
-local mapStage
-oldLives = 0
-endCheck = 0
-setEnding = 0
-debug = 0
-endGame = 0
-local aPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSez}
-
---Impossible Planets Toggle
-if enable_impossible_planets == 1 then
-    aPlanets = {pCor, pTra, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSez}
-else
-    aPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSez}
-end
-
---Ending Stages & Impossible planets toggle
-if enable_ending_stages == 1 and enable_impossible_planets == 1 then
-    aPlanets = {pCor, pTra, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSez, pBol, pAr6, pVe1, pV1T, pVe2}
-end
-
---Enable ending stages but disables the impossible ones
-if enable_ending_stages == 1 then
-    aPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSez, pBol, pAr6, pVe1, pV1T, pVe2}
-    --aPlanets = {pBol, pAr6, pVe1, pVe2, pV1T}
-end
-
-
+local oldLives = 0
+local planetList = {pCor, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSeZ, pTra}
+local allPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSeZ, pAr6, pBol, pTra}
+local aPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSeZ, pTra}
 local ePlanets = {pBol, pAr6}
+local obtainNew = 0
+local checkLives = 0
+local nextPlanet = 0
+local sfcheck = 0
+local swKatinaT = 0
+
+--player information
+local playerLives = 0
+local playerStage = 0
+local playerState1 = 0
+local playerState2 = 0
+local playerMode = 0
+local restarted = 0
+
+--portrait info
+
+local currentPortrait = 0
+local peppy = 16880
+local fox = 0
+local james = 17352
+local slippy = 16800
+local falco = 16672
+local rob = 17076
+local redP = 17327
+local corBoss1 = 17116
+local corBoss2 = 17056
+local seyBoss = 17184
+local metBoss = 17096
+local sexBoss = 17174
+local zonBoss = 17154
+local andross = 16988
+local subBoss1 = 17204
+local subBoss2 = 17136
+local macBoss = 16928
+local bill = 17194
+local katt = 16928
+local wolf = 17224
+local leon = 17244
+local pigma = 17234
+local andrew = 17254
+local vWolf = 17264
+local vLeon = 17282
+local vPigma = 17274
+local vAndrew = 17287
+local speaking = 0
+local portraitChange = 0
+local orP = 0
+local lastSpeaker = 0
+local expertModeToggle = 0
+
+
+--New Portraits
+local oPeppy = 0
+local oFox = 0
+local oJames = 0
+local oSlippy = 0
+local oFalco = 0
+local oRob = 0
+local oRedP = 0
+local oCorBoss1 = 0
+local oCorBoss2 = 0
+local oSeyBoss = 0
+local oMetBoss = 0
+local oSexBoss = 0
+local oZonBoss = 0
+local oAndross = 0
+local oSubBoss1 = 0
+local oSubBoss2 = 0
+local oMacBoss = 0
+local oBill = 0
+local oKatt = 0
+local oWolf = 0
+local oLeon = 0
+local oPigma = 0
+local oAndrew = 0
+local oVWolf = 0
+local oVLeon = 0
+local oVPigma = 0
+local oVAndrew = 0
+
+
+local newCorneria = 0
+local newMeteo = 0
+local newFortuna = 0
+local newKatina = 0
+local newSx = 0
+local newTitania = 0
+local newBolse = 0
+local newV1 = 0
+local newSy = 0
+local newSolar = 0
+local newAquas = 0
+local newZoness = 0
+local newMacbeth = 0
+local newA6 = 0
+local newSz = 0
+local newV2 = 0
+local newTunnel = 0
+
+--Misc Information
+local vcorneria = {16880, 0, 16800, 16672, 17076, 17352, 17116, 17056}
+local vmeteo = {16880, 0, 16800, 16672, 17076, 17352, 17096}
+local vfortuna = {16880, 0, 16800, 16672, 17076, 17352, 17224, 17244, 17234, 17254}
+local vkatina = {16880, 0, 16800, 16672, 17076, 17352, 17194, 16928, 17264, 17282, 17274, 17287}
+local vsx = {16880, 0, 16800, 16672, 17076, 17352, 17194, 17174}
+local vtitania = {16880, 0, 16800, 16672, 17076, 17352}
+local vbolse = {16880, 0, 16800, 16672, 17076, 17352, 17224, 17244, 17234, 17254}
+local vv1 = {16880, 0, 16800, 16672, 17076, 17352, 16988}
+local vsy = {16880, 0, 16800, 16672, 17076, 17352, 17184}
+local vsolar = {16880, 0, 16800, 16672, 17076, 17352, 17174}
+local vaquas = {16880, 0, 16800, 16672, 17076, 17352}
+local vzoness = {16880, 0, 16800, 16672, 17076, 17352, 16928, 17154}
+local vmacbeth = {16880, 0, 16800, 16672, 17076, 17352, 17214, 16928}
+local va6 = {16880, 0, 16800, 16672, 17076, 17352, 16988, 17204, 17136}
+local vsz = {16880, 0, 16800, 16672, 17076, 17352, 16928}
+local vv2 = {16880, 0, 16800, 16672, 17076, 17352, 17264, 17282, 17274, 17287}
+local vtraining = {17076, 17327}
+local vtunnel = {0, 17352, 16988}
+local soundID = tonumber(memory.read_s16_be(0x0C2F06, "RDRAM"))
+local mapStatus = 0
 local ePowerUps = {322, 322, 322, 322, 322, 322, 324, 324, 324, 324, 324, 324, 325, 325, 325, 325, 325, 325, 327, 327, 327, 327, 327, 327, 335, 336, 336, 336, 336, 336, 336, 337, 337, 337, 337, 337, 337}
-pCount = 0
-oldPCount = 0
-randomPlanet = 0
-newLevel = 0
-debugMeteo = 0
-randomEPickup = 0
-randomPortrait = 0
-pChange = 0
-playerStage = 0
-local ticked = 0
+local expertMode = {0, 1}
 
 
-function getRandomAfterTank()
-    if oldStage == pMac then
-        aPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pTit, pAqu, pFor, pKat, pSez}
-        randomPlanet = tonumber(aPlanets[math.random(#aPlanets)])
-    end
-    if oldStage == pTit then
-        aPlanets = {pCor, pMac, pMet, pSeX, pSeY, pSol, pZon, pAqu, pFor, pKat, pSez}
-        randomPlanet = tonumber(aPlanets[math.random(#aPlanets)])
+
+--Randomize object's position inside of a list
+local function shuffle(tbl)
+  for i = #tbl, 2, -1 do
+    local j = math.random(i)
+    tbl[i], tbl[j] = tbl[j], tbl[i]
+  end
+  return tbl
+end
+
+--remove an object from a list without breaking a list
+local function removeFromList(array, value)
+	for i = #array, 1, -1 do
+		if array[i] == value then
+			table.remove(array, i)
+		end
+	end
+end
+
+--get size of a list
+local function listSize(array)
+        listSize = 0
+        for _ in pairs(array) do 
+            listSize = listSize + 1
+        end
+    return listSize
+end
+
+
+
+--Prepare portrait randomization
+local function prepareRandom()
+     newCorneria = shuffle(vcorneria)
+     newMeteo = shuffle(vmeteo)
+     newFortuna = shuffle(vfortuna)
+     newKatina = shuffle(vkatina)
+     newSx = shuffle(vsx)
+     newTitania = shuffle(vtitania)
+     newBolse = shuffle(vbolse)
+     newV1 = shuffle(vv1)
+     newSy = shuffle(vsy)
+     newSolar = shuffle(vsolar)
+     newAquas = shuffle(vaquas)
+     newZoness = shuffle(vzoness)
+     newMacbeth = shuffle(vmacbeth)
+     newA6 = shuffle(va6)
+     newSz = shuffle(vsz)
+     newV2 = shuffle(vv2)
+     newTunnel = shuffle(vtunnel)
+    
+end
+
+prepareRandom()
+
+
+function randomPickUp()
+    randomEPickup = tonumber(ePowerUps[math.random(#ePowerUps)])
+    memory.write_s32_be(0x0CB408, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB40C, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB410, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB414, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB418, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB41C, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB420, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB424, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB428, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB42C, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB430, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB434, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB438, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB43C, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB440, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB444, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB448, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB44C, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB450, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB454, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB458, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB45C, randomEPickup, "RDRAM")
+    memory.write_s32_be(0x0CB460, randomEPickup, "RDRAM")
+end
+
+
+function swKatina()
+    if playerStage == pKat then
+        if enable_star_wolf_katina == 1 then
+            enable_star_wolf_katina = 0
+            memory.write_s16_be(0x02BD30, 3072, "RDRAM")
+            memory.write_s16_be(0x02BD32, 43996, "RDRAM")
+            emu.frameadvance()
+            gui.addmessage("ADDING STAR WOLF")
+            swKatinaT = 1
+        end
     end
 end
 
-function EndTheGame()
-    endGame = 1
+
+function corneria()
+    oFox = newCorneria[1]
+    oPeppy = newCorneria[2]
+    oSlippy = newCorneria[3]
+    oFalco = newCorneria[4]
+    oJames = newCorneria[5]
+    oRob = newCorneria[6]
+    oCorBoss1 = newCorneria[7]
+    oCorBoss2 = newCorneria[8]
+end
+
+
+
+function meteo()
+    oFox = newMeteo[1]
+    oPeppy = newMeteo[2]
+    oSlippy = newMeteo[3]
+    oFalco = newMeteo[4]
+    oJames = newMeteo[5]
+    oRob = newMeteo[6]
+    oMetBoss = newMeteo[7]
+end
+
+
+
+function fortuna()
+    oFox = newFortuna[1]
+    oPeppy = newFortuna[2]
+    oSlippy = newFortuna[3]
+    oFalco = newFortuna[4]
+    oJames = newFortuna[5]
+    oRob = newFortuna[6]
+    oWolf = newFortuna[7]
+    oLeon = newFortuna[8]
+    oPigma = newFortuna[9]
+    oAndrew = newFortuna[10]
+end
+
+
+
+function katina()
+    oFox = newKatina[1]
+    oPeppy = newKatina[2]
+    oSlippy = newKatina[3]
+    oFalco = newKatina[4]
+    oJames = newKatina[5]
+    oRob = newKatina[6]
+    oBill = newKatina[7]
+end
+
+
+
+function sx()
+    oFox = newSx[1]
+    oPeppy = newSx[2]
+    oSlippy = newSx[3]
+    oFalco = newSx[4]
+    oJames = newSx[5]
+    oRob = newSx[6]
+    oSexBoss = newSx[7]
+end
+
+
+
+function titania()
+    oFox = newTitania[1]
+    oPeppy = newTitania[2]
+    oSlippy = newTitania[3]
+    oFalco = newTitania[4]
+    oJames = newTitania[5]
+    oRob = newTitania[6]
+end
+
+
+
+function bolse()
+    oFox = newBolse[1]
+    oPeppy = newBolse[2]
+    oSlippy = newBolse[3]
+    oFalco = newBolse[4]
+    oJames = newBolse[5]
+    oWolf = newBolse[6]
+    oLeon = newBolse[7]
+    oPigma = newBolse[8]
+    oAndrew = newBolse[9]
+end
+
+
+
+function v1()
+    oFox = newV1[1]
+    oPeppy = newV1[2]
+    oSlippy = newV1[3]
+    oFalco = newV1[4]
+    oJames = newV1[5]
+    oRob = newV1[6]
+    oAndross = newv1[7]
+end
+
+
+
+function sy()
+    oFox = newSy[1]
+    oPeppy = newSy[2]
+    oSlippy = newSy[3]
+    oFalco = newSy[4]
+    oJames = newSy[5]
+    oRob = newSy[6]
+    oSeyBoss = newSy[7]
+end
+
+
+
+function solar()
+    oFox = newSolar[1]
+    oPeppy = newSolar[2]
+    oSlippy = newSolar[3]
+    oFalco = newSolar[4]
+    oJames = newSolar[5]
+    oRob = newSolar[6]
+    oBill = newSolar[7]
+end
+
+
+
+function aquas()
+    oFox = newAquas[1]
+    oPeppy = newAquas[2]
+    oSlippy = newAquas[3]
+    oFalco = newAquas[4]
+    oJames = newAquas[5]
+    oRob = newAquas[6]
+end
+
+
+
+function zoness()
+    oFox = newZoness[1]
+    oPeppy = newZoness[2]
+    oSlippy = newZoness[3]
+    oFalco = newZoness[4]
+    oJames = newZoness[5]
+    oRob = newZoness[6]
+    oKatt = newZoness[7]
+    oZonBoss = newZoness[8]
+end
+
+
+
+function macbeth()
+    oFox = newMacbeth[1]
+    oPeppy = newMacbeth[2]
+    oSlippy = newMacbeth[3]
+    oFalco = newMacbeth[4]
+    oJames = newMacbeth[5]
+    oRob = newMacbeth[6]
+    oKatt = newMacbeth[7]
+    oMacBoss = newMacbeth[8]
+end
+
+
+
+function a6()
+    oFox = newA6[1]
+    oPeppy = newA6[2]
+    oSlippy = newA6[3]
+    oFalco = newA6[4]
+    oJames = newA6[5]
+    oRob = newA6[6]
+    oSubBoss1 = newA6[7]
+    oSubBoss2 = newA6[8]
+    oAndross = newA6[9]
+end
+
+
+
+
+function sz()
+    oFox = newSZ[1]
+    oPeppy = newSZ[2]
+    oSlippy = newSZ[3]
+    oFalco = newSZ[4]
+    oJames = newSZ[5]
+    oRob = newSZ[6]
+    oKatt = newSZ[7]
+end
+
+
+
+function v2()
+    oFox = newV2[1]
+    oPeppy = newV2[2]
+    oSlippy = newV2[3]
+    oFalco = newV2[4]
+    oJames = newV2[5]
+    oRob = newV2[6]
+    oVWolf = newV2[7]
+    oVLeon = newV2[8]
+    oVPigma = newV2[9]
+    oVAndrew = newV2[10]
+end
+
+
+
+function tunnel()
+    oFox = newV2[1]
+    oJames = newV2[2]
+    oAndross = newV2[3]
+end
+
+
+
+
+--Advance a frame
+function adv()
+    emu.frameadvance()
+end
+
+
+
+
+--Get a random planet
+
+function getPlanet()
+    pCount = pCount + 1
+    if pCount < 5 then
+        if enable_repeatable_levels == 0 then
+            removeFromList(aPlanets, oldStage)
+        end
+        if enable_ending_stages == 1 then
+            randomPlanet = tonumber(allPlanets[math.random(#allPlanets)])
+        else
+            randomPlanet = tonumber(aPlanets[math.random(#aPlanets)])
+        end
+        if randomPlanet == oldStage then
+            if enable_ending_stages == 1 then
+                randomPlanet = tonumber(allPlanets[math.random(#allPlanets)])
+            else
+                randomPlanet = tonumber(aPlanets[math.random(#aPlanets)])
+            end
+        end
+    end
     if pCount >= 5 then
         randomPlanet = tonumber(ePlanets[math.random(#ePlanets)])
     end
-end
-        
-
-
-function getPlanet()
-    i = 0
-    getNew = 0
-    ticked = 1
-    gui.addmessage(oldStage)
-    if oldStage == pMac and pCount < 5 then
-        setOverride = 1
-        aPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pTit, pAqu, pFor, pKat, pSez}
-        randomPlanet = tonumber(aPlanets[math.random(#aPlanets)])
-        forceLevel = 1
-    end
-    if oldStage == pTit  and pCount < 5 then
-        setOverride = 1
-        aPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pMac, pAqu, pFor, pKat, pSez}
-        randomPlanet = tonumber(aPlanets[math.random(#aPlanets)])
-        forceLevel = 1
-    end
-    if getNew == 0 then
-        mapStage = playerStage
-        pCount = pCount + 1
-    end
-    if pCount >= 5 then
-        randomPlanet = tonumber(ePlanets[math.random(#ePlanets)])   
-    else
-        --Impossible Planets Toggle
-        if enable_impossible_planets == 1 then
-            aPlanets = {pCor, pTra, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSez}
-        else
-            aPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSez}
-        end
-
-        --Ending Stages & Impossible planets toggle
-        if enable_ending_stages == 1 and enable_impossible_planets == 1 then
-            aPlanets = {pCor, pTra, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSez, pBol, pAr6, pVe1, pV1T, pVe2}
-        end
-
-        --Enable ending stages but disables the impossible ones
-        if enable_ending_stages == 1 then
-            aPlanets = {pCor, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSez, pBol, pAr6, pVe1, pV1T, pVe2}
-        end
-        randomPlanet = tonumber(aPlanets[math.random(#aPlanets)])
-        while tonumber(randomPlanet) == tonumber(oldStage) do
-            i = i + 1
-            randomPlanet = tonumber(aPlanets[math.random(#aPlanets)])
-            --newMessage = "OLD STAGE IS SAME AS NEW STAGE, GETTING NEW ONE: " ..i
-            emu.frameadvance()  
-        end
-    end
-    --Enables Random Expert Mode
-    if enable_expert_mode == 1 then
-       getExpert = tonumber(expertMode[math.random(#expertMode)])
-    end
+    nextPlanet = randomPlanet
 end
 
-function resetP()
-    randomPlanet = tonumber(oldStage)
-end
 
-function randEPickup()
-    randomEPickup = tonumber(ePowerUps[math.random(#ePowerUps)])
-end
 
-function randomPortraits()
-        corneria = {16880, 0, 16800, 16672, 17076, 17352, 17116, 17056}
-        meteo = {16880, 0, 16800, 16672, 17076, 17352, 17096}
-        fortuna = {16880, 0, 16800, 16672, 17076, 17352, 17224, 17244, 17234, 17254}
-        katina = {16880, 0, 16800, 16672, 17076, 17352, 17194, 16928, 17264, 17282, 17274, 17287}
-        sx = {16880, 0, 16800, 16672, 17076, 17352, 17194, 17174}
-        titania = {16880, 0, 16800, 16672, 17076, 17352}
-        bolse = {16880, 0, 16800, 16672, 17076, 17352, 17224, 17244, 17234, 17254}
-        v1 = {16880, 0, 16800, 16672, 17076, 17352, 16988}
-        sy = {16880, 0, 16800, 16672, 17076, 17352, 17184}
-        solar = {16880, 0, 16800, 16672, 17076, 17352, 17174}
-        aquas = {16880, 0, 16800, 16672, 17076, 17352}
-        zoness = {16880, 0, 16800, 16672, 17076, 17352, 16928, 17154}
-        macbeth = {16880, 0, 16800, 16672, 17076, 17352, 17214, 16928}
-        a6 = {16880, 0, 16800, 16672, 17076, 17352, 16988, 17204, 17136}
-        sz = {16880, 0, 16800, 16672, 17076, 17352, 16928}
-        v2 = {16880, 0, 16800, 16672, 17076, 17352, 17264, 17282, 17274, 17287}
-        tunnel = {0, 17352, 16988}
-        if playerStage == pCor then
-            randomPortrait = tonumber(corneria[math.random(#corneria)])
-        elseif playerStage == pMet then
-            randomPortrait = tonumber(meteo[math.random(#meteo)])
-        elseif playerStage == pAr6 then
-            randomPortrait = tonumber(a6[math.random(#a6)])
-        elseif playerStage == pSey then
-            randomPortrait = tonumber(sy[math.random(#sy)])
-        elseif playerStage == pVe1 then
-            randomPortrait = tonumber(v1[math.random(#v1)])
-        elseif playerStage == pSol then
-            randomPortrait = tonumber(solar[math.random(#solar)])
-        elseif playerStage == pZon then
-            randomPortrait = tonumber(zoness[math.random(#zoness)])
-        elseif playerStage == pV1T then
-            randomPortrait = tonumber(tunnel[math.random(#tunnel)])
-        elseif playerStage == pMac then
-            randomPortrait = tonumber(macbeth[math.random(#macbeth)])
-        elseif playerStage == pTit then
-            randomPortrait = tonumber(titania[math.random(#titania)])
-        elseif playerStage == pAqu then
-            randomPortrait = tonumber(aquas[math.random(#aquas)])
-        elseif playerStage == pFor then
-            randomPortrait = tonumber(fortuna[math.random(#fortuna)])
-        elseif playerStage == pKat then
-            randomPortrait = tonumber(katina[math.random(#katina)])
-        elseif playerStage == pBol then
-            randomPortrait = tonumber(bolse[math.random(#bolse)])
-        elseif playerStage == pSeZ then
-            randomPortrait = tonumber(sz[math.random(#sz)])
-        elseif playerStage == pVe2 then
-            randomPortrait = tonumber(v2[math.random(#v2)])
-        else
-            randomPortrait = tonumber(corneria[math.random(#corneria)])
-        end
-end
-    
+--Player Infromation
 
-while true do
-    randEPickup()
-	playerLives = tonumber(memory.readbyte(0x157911, "RDRAM"))
-	playerStage = tonumber(memory.readbyte(0x16E0A7, "RDRAM"))
-	playerState1 = tonumber(memory.readbyte(0x137BAB, "RDRAM"))
-	playerState2 = tonumber(memory.readbyte(0x13AA8B, "RDRAM"))
-    soundID = tonumber(memory.read_s16_be(0x0C2F06, "RDRAM"))
+function getInfo()
+    playerLives = tonumber(memory.readbyte(0x157911, "RDRAM"))
+    playerStage = tonumber(memory.readbyte(0x16E0A7, "RDRAM"))
+    playerState1 = tonumber(memory.readbyte(0x137BAB, "RDRAM"))
+    playerState2 = tonumber(memory.readbyte(0x13AA8B, "RDRAM"))
+    playerMode = tonumber(memory.read_s32_be(0x16D868, "RDRAM"))
     mapStatus = tonumber(memory.read_s32_be(0x1C37B4, "RDRAM"))
-	if debug == 1 then
-		oldLives = playerLives
-		oldStage = 8
-		endCheck = 1
-		getNew = 1
-	end
-    if pCount >= 5 then
-        endGame = 1
-    end
-    if playerState1 == 1 or playerState2 == 1 then
-        forceLevel = 0
-        getNew = 0
-        setOverride = 0
-        endGame = 0
-        if pCount == 5 then
-            pCount = 0
-            getNew = 0
-            endCheck = 0
+    checkPortrait = tonumber(memory.read_s16_be(0x16DBD8, "RDRAM"))
+end
+
+
+
+function assignNew()
+    if portraitChange == 1 then
+        portraitChange = 0
+        if playerStage == pCor then
+            corneria()
+        end
+        if playerStage == pMet then
+            meteo()
+        end
+        if playerStage == pFor then
+            fortuna()
+        end
+        if playerStage == pKat then
+            katina()
+        end
+        if playerStage == pSeX then
+            sx()
+        end
+        if playerStage == pTit then
+            titania()
+        end
+        if playerStage == pBol then
+            bolse()
+        end
+        if playerStage == pVe1 then
+            v1()
+        end
+        if playerStage == pSeY then
+            sy()
+        end
+        if playerStage == pSol then
+            solar()
+        end
+        if playerStage == pAqu then
+            aquas()
+        end
+        if playerStage == pZon then
+            zoness()
+        end
+        if playerStage == pMac then
+            macbeth()
+        end
+        if playerStage == pAr6 then
+            a6()
+        end
+        if playerStage == pSeZ then
+            sz()
+        end
+        if playerStage == pVe2 then
+            v2()
+        end
+        if playerStage == pTun then
+            tunnel()
         end
     end
-    if playerState1 == 2 or playerState2 == 2 then
-        if pChange == 0 then
-            randomPortraits()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            pChange = 1
+end
+
+
+
+
+
+--Who is currently speaking
+
+
+function speaker()
+    if portraitChange == 1 then
+        assignNew()
+        portraitChange = 0
+    end
+    if orP == 0 then
+        lastSpeaker = checkPortrait
+    end
+    if tonumber(memory.read_s16_be(0x0C2F06, "RDRAM")) > 2 then
+        if orP == 1 then
+            if lastSpeaker == fox then
+                    lastSpeaker = fox
+                    speaking = "FOX"
+                    memory.write_s16_be(0x16DBD8, oFox, "RDRAM")
+                    orP = 0
+            elseif lastSpeaker == peppy then
+                    lastSpeaker = peppy
+                    speaking = "PEPPY"
+                    memory.write_s16_be(0x16DBD8, oPeppy, "RDRAM")
+                    orP = 0
+            elseif lastSpeaker == slippy then
+                    lastSpeaker = slippy
+                    speaking = "SLIPPY"
+                    memory.write_s16_be(0x16DBD8, oSlippy, "RDRAM")
+                    orP = 0
+            elseif lastSpeaker == falco then
+                    lastSpeaker = falco
+                    speaking = "FALCO"
+                    memory.write_s16_be(0x16DBD8, oFalco, "RDRAM")
+                    orP = 0
+            elseif lastSpeaker == katt then
+                if orP == 1 then
+                    speaking = "KATT"
+                    memory.write_s16_be(0x16DBD8, oKatt, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == james then
+                if orP == 1 then
+                    speaking = "JAMES"
+                    memory.write_s16_be(0x16DBD8, oJames, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == rob then
+                if orP == 1 then
+                    speaking = "ROB"
+                    memory.write_s16_be(0x16DBD8, oRob, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == corBoss1 then
+                if orP == 1 then
+                    speaking = "CORN. BOSS 1"
+                    memory.write_s16_be(0x16DBD8, oCorBoss1, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == corBoss2 then
+                if orP == 1 then
+                    speaking = "CORN. BOSS 2"
+                    memory.write_s16_be(0x16DBD8, oCorBoss2, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == seyBoss then
+                if orP == 1 then
+                    speaking = "SEY. BOSS"
+                    memory.write_s16_be(0x16DBD8, oSeyBoss, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == metBoss then
+                if orP == 1 then
+                    speaking = "METEO BOSS"
+                    memory.write_s16_be(0x16DBD8, oMetBoss, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == sexBoss then
+                if orP == 1 then
+                    speaking = "SEX BOSS"
+                    memory.write_s16_be(0x16DBD8, oSexBoss, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == zonBoss then
+                if orP == 1 then
+                    speaking = "ZONESS BOSS"
+                    memory.write_s16_be(0x16DBD8, oZonBoss, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == andross then
+                if orP == 1 then
+                    speaking = "ANDROSS"
+                    memory.write_s16_be(0x16DBD8, oAndross, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == subBoss1 then
+                if orP == 1 then
+                    speaking = "SUB. BOSS 1"
+                    memory.write_s16_be(0x16DBD8, oSubBoss1, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == subBoss2 then
+                if orP == 1 then
+                    speaking = "SUB. BOSS 2"
+                    memory.write_s16_be(0x16DBD8, oSubBoss2, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == macBoss then
+                if orP == 1 then
+                    speaking = "MACBETH BOSS"
+                    memory.write_s16_be(0x16DBD8, oMacBoss, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == bill then
+                if orP == 1 then
+                    speaking = "BILL"
+                    memory.write_s16_be(0x16DBD8, oBill, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == wolf then
+                if orP == 1 then
+                    speaking = "F. WOLF"
+                    memory.write_s16_be(0x16DBD8, oWolf, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == leon then
+                if orP == 1 then
+                    speaking = "F. LEON"
+                    memory.write_s16_be(0x16DBD8, oLeon, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == pigma then
+                if orP == 1 then
+                    speaking = "F. PIGMA"
+                    memory.write_s16_be(0x16DBD8, oPigma, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == andrew then
+                if orP == 1 then
+                    speaking = "F. ANDREW"
+                    memory.write_s16_be(0x16DBD8, oAndrew, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == vWolf then
+                if orP == 1 then
+                    speaking = "V. WOLF"
+                    memory.write_s16_be(0x16DBD8, oVWolf, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == vLeon then
+                if orP == 1 then
+                    speaking = "V. LEON"
+                    memory.write_s16_be(0x16DBD8, oVLeon, "RDRAM")
+                    orP = 0
+                end
+            elseif lastSpeaker == vPigma then
+                    speaking = "V. PIGMA"
+                    memory.write_s16_be(0x16DBD8, oVPigma, "RDRAM")
+                    orP = 0
+            elseif lastSpeaker == vAndrew then
+                if orP == 1 then
+                    speaking = "V. ANDREW"
+                    memory.write_s16_be(0x16DBD8, oVAndrew, "RDRAM")
+                    orP = 0
+                end
+            end
         end
-        forceLevel = 0
-        getNew = 0
     end
-    if playerState1 == 9 or playerState2 == 9 then
-        forceLevel = 0
-        getNew = 0
-    end
-    if playerState1 == 8 or playerState2 == 8 then
-        forceLevel = 0
-        getNew = 0
-    end
-    if soundID < 2 then
-        pChange = 0    
-    end
-    --ACTUALLY PLAYING THE LEVEL--
-	if playerState1 == 3 or playerState2 == 3 then
-        if expertMode == 1 then
-            memory.write_s32_be(0x16D868, 1, "RDRAM")
+    orP = 1
+end
+
+
+
+function debugInfo()
+    if debugMode == 1 then
+        --debugText = "DEBUG IS ON!"
+        
+        --debugText = "pCount: " ..pCount.. " oStage: " ..oldStage.. " nStage: " ..nextPlanet.. " cStage: " ..playerStage.. " getNew: " ..obtainNew.. " oLife: " ..oldLives.. " pLife: " ..playerLives.. " cLife: " ..checkLives.. " mStatus: " ..mapStatus
+        gui.text(0,0, "SF64:RAND. DEBUG INFORMATION:")
+        gui.text(0,10,"-----------------------------")
+        
+        
+        gui.text(0,30,"Game Information:")
+        gui.text(0,40,"-----------------")
+        gui.text(0,50,"Planets Completed: " ..pCount)
+        gui.text(0,70,"Last Stage Completed: " ..oldStage)
+        gui.text(0,90,"Next Planet Selected: " ..nextPlanet)
+        gui.text(0,110,"Current Planet Level: " ..playerStage)
+        gui.text(0,130,"Randomizing Planet: " ..obtainNew)
+        gui.text(0,150,"Map Status: " ..mapStatus)
+        
+        gui.text(0,200,"Player Information:")
+        gui.text(0,210,"------------------")
+        gui.text(0,220,"Current Lives: " ..playerLives)
+        gui.text(0,240,"Old Lives: " ..oldLives)
+        gui.text(0,260,"Checking Lives:" ..checkLives)
+        
+        apSize = 0
+        spacing = 300
+        
+        gui.text(0,300,"Planet List:")
+        gui.text(0,310,"------------")
+        if enable_ending_stages == 0 then
+            for _ in pairs(aPlanets) do 
+                apSize = apSize + 1
+                spacing = spacing + 20
+                inList = tonumber(aPlanets[apSize])
+                gui.text(0,spacing, inList)
+            end
         else
-            memory.write_s32_be(0x16D868, 0, "RDRAM")
-        end
-        endGame = 0
-        ticked = 0
-        if tonumber(memory.read_s16_be(0x0C2F06, "RDRAM")) > 2 then
-            if playerStage == 3 or playerStage == 17 then
-                forceLevel = 0 
-            end
-            if pChange == 0 then
-                randomPortraits()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                emu.frameadvance()
-                memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-                pChange = 1
+            for _ in pairs(allPlanets) do 
+                apSize = apSize + 1
+                spacing = spacing + 20
+                inList = tonumber(allPlanets[apSize])
+                gui.text(0,spacing, inList)
             end
         end
-        memory.write_s32_be(0x0CB408, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB40C, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB410, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB414, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB418, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB41C, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB420, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB424, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB428, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB42C, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB430, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB434, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB438, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB43C, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB440, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB444, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB448, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB44C, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB450, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB454, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB458, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB45C, randomEPickup, "RDRAM")
-        memory.write_s32_be(0x0CB460, randomEPickup, "RDRAM")
-        forceLevel = 0
-        --newMessage = "Random Pickup: " ..randomEPickup
-		--newMessage = "PlayerState1: " ..playerState1.. " PlayerState2: " .. playerState2.. " Level: " ..tonumber(playerStage)
-	end
-	if playerState1 == 7 then
-        if pChange == 0 then
-            randomPortraits()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            pChange = 1
-        end
-        endCheck = 1
-        oldStage = playerStage
-		--newMessage = "PS1: OLD STAGE: " .. oldStage
-	end
-	if playerState2 == 7 then
-        if pChange == 0 then
-            randomPortraits()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
-            pChange = 1
-        end
-        endCheck = 1
-        oldStage = playerStage
+        
+        gui.text(0,620,"Speaking: ")
+        gui.text(0,630,"--------")
+        gui.text(0,640,"Portrait ID: " ..checkPortrait)
+        gui.text(0,660,"Speaking: " ..speaking)
+        gui.text(0,680,"Portrait Check: " ..portraitChange)
+        gui.text(0,700,"Last Speaker:" ..lastSpeaker)
+        
+        
+        apSize = 0
+        spacing = 730
+        
+        gui.text(0,730,"R. Corneria:")
+        gui.text(0,740,"------------")
+        gui.text(0,760,"oFox: " ..oFox)
+        gui.text(0,780,"oFalco: " ..oFalco)
+        gui.text(0,800,"oPeppy: " ..oPeppy)
+        gui.text(0,820,"oSlippy: " ..oSlippy)
+        --[[for _ in pairs(newCorneria) do 
+            apSize = apSize + 1
+            spacing = spacing + 20
+            inList = tonumber(newCorneria[apSize])
+            gui.text(0,spacing, inList)
+        end]]--
+        gui.text(0,900,"Expert Mode: " ..tonumber(memory.read_s32_be(0x16D868, "RDRAM")))
+        
     end
-    if playerStage == 3 or playerStage == 17 then
-        forceLevel = 0 
+end
+
+
+
+
+--Get ending sequence
+while true do
+    
+    
+    if enable_early_randomization == 1 then
+        obtainNew = 1
+        enable_early_randomization = 0
+        pCount = pCount - 1
     end
+    
+    if enable_impossible_planets == 0 then
+        
+        rpSize = 0
+        for _ in pairs(aPlanets) do 
+            rpSize = rpSize + 1
+            inList = tonumber(aPlanets[rpSize])
+            if inList == pTra then
+                removeFromList(aPlanets, pTra)
+            end
+        end
+        rpSize = 0
+        for _ in pairs(allPlanets) do 
+            rpSize = rpSize + 1
+            inList = tonumber(allPlanets[rpSize])
+            if inList == pTra then
+                removeFromList(allPlanets, pTra)
+            end
+        end
+    end
+    
+    
+    getInfo()
+    debugInfo()
+    adv()
+    
+    if playerState1 == 1 or playerState2 == 1 then
+        if enable_star_wolf_katina == 1 then
+            swKatina()
+        end
+        portraitChange = 1
+        orP = 1
+        speaker()
+        if enable_expert_mode == 1 then
+           expertModeToggle = 1 
+        end
+    end
+    
+    if playerState1 == 2 or playerState2 == 2 then
+        speaker()
+    end
+    
+    if playerState1 == 3 or playerState2 == 3 then
+        speaker()
+        randomPickUp()
+        if expertModeToggle == 1 then
+            expertModeToggle = 0
+            getExpert = tonumber(expertMode[math.random(#expertMode)])
+            memory.write_s32_be(0x16D868, getExpert, "RDRAM")
+            memory.writebyte(0x16DB83, 20, "RDRAM")
+	        memory.writebyte(0x16DB9B, 20, "RDRAM")
+        end
+        if swKatinaT == 1 then
+            memory.write_s16_be(0x02BD30, 3078, "RDRAM")
+            memory.write_s16_be(0x02BD32, 14593, "RDRAM")
+            swKatinaT = 0
+        end
+        if restarted == 1 then
+            pCount = pCount - 1
+            restarted = 0
+        end
+    end
+    
+    
+    if playerState1 == 7 then
+        speaker()
+        --Record the old stage
+        oldStage = playerStage
+        if pCount < 5 then
+            obtainNew = 1
+        end
+        checkLives = 1
+    
+    end
+   
+    if playerState2 == 7 then
+        speaker()
+        --Record the old stage
+        oldStage = playerStage
+        if pCount < 5 then
+            obtainNew = 1
+        end
+        checkLives = 1
+
+    end
+   
+    --Collect information for the next stage
+
     if mapStatus == 3 then
-        if setOverride == 1 then
-            memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
+        if checkLives == 1 then
+            checkLives = 0
+            oldLives = playerLives
         end
         if oldLives > playerLives then
-            resetP()
-            forceLevel = 1
-            --newMessage = "Staying the old level..."
-            getNew = 0
+            nextPlanet = oldStage
+            obtainNew = 0
+            restarted = 1
         else
-            if endCheck == 1 then
-                if ticked == 0 then
-                    getNew = 1
-                    --newMessage = "Getting random level..."
-                end
-            end
-            if ticked == 1 then
-                memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-            end
-        end
-    end
-		--newMessage = "PS2: OLD STAGE: " .. oldStage
-	if endCheck == 1 then
-        if forceLevel == 1 then
-            if debugMeteo == 1 then
-                memory.writebyte(0x16E0A7, 1, "RDRAM")
-                --newMessage = "GOING TO METEO!"
-            elseif setOverride == 1 then
-                memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-            else
-                if mapStatus == 4 then
-                    if pCount >= 5 then
-                        EndTheGame()
-                        memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-                    end
-                    if setOverride == 1 then
-                        getRandomAfterTank()
-                        memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-                    end
-                    if endGame == 1 then
-                        EndTheGame()
-                        memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-                    end
-                    --newMessage = "LOOPING: " ..randomPlanet
-                    memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-                    emu.frameadvance()
-                end
-            end
-        end
-        --newMessage = "END IS CHECKED..."
-        if getNew == 1 then
-                debug = 0
+            if obtainNew == 1 then
                 getPlanet()
-                if setOverride == 1 then
-                    memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-                end
-                if endGame == 1 then
-                    memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-                end
-                if pCount >= 5 then
-                    memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-                end
-                --newMessage = "WE WENT TO GET A NEW PLANET..."
-                forceLevel = 1
-                --newMessage = "Got New Planet: " ..randomPlanet.. " Old Stage: " ..oldStage
-            if setOverride == 1 then
-                if mapStatus == 4 then
-                    if randomPlanet ~= playerStage then
-                    memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-                    end
-                end
-            end
-            if endGame == 1 then
-                if mapStatus == 4 then
-                    if randomPlanet ~= playerStage then
-                        memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-                    end
-                end
-            end
-            if pCount >=5 then
-                if mapStatus == 4 then
-                    if randomPlanet ~= playerStage then
-                        memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-                    end
-                end
-            end
-            if randomPlanet ~= playerStage then
-                memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
+                obtainNew = 0
             end
         end
     end
-    if endGame == 1 then
-        if randomPlanet ~= playerStage then
-            memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-        end
+   
+    
+    -- Apply the next planet
+
+    if mapStatus == 4 then
+        --debugInfo()
+        memory.writebyte(0x16E0A7, nextPlanet, "RDRAM")
     end
-    if setOverride == 1 then
-        if randomPlanet ~= playerStage then
-            memory.writebyte(0x16E0A7, randomPlanet, "RDRAM")
-        end
-    end
-    --newMessage = pCount
-    --newMessage = "Expert mode: " ..getExpert
-    --newMessage = "Ticked: " ..ticked.. " Next Stage: " ..randomPlanet.. " pCount: " ..pCount.. " PS1: " ..playerState1.. " PS2: " ..playerState2.. " Set Overide: " ..setOverride
-    --newMessage = "Old Stage: " ..oldStage.. " Next Stage: " ..randomPlanet.. " Actual Stage: " ..playerStage.. " Set Override: " ..setOverride.. " pCount: " ..pCount.. " End Game: " ..endGame
-	gui.text(0,0,newMessage)
-	emu.frameadvance()
 end

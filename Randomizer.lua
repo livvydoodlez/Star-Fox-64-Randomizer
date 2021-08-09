@@ -14,9 +14,6 @@ enable_long_venom = 0
 --Enables randomized Expert Mode
 enable_expert_mode = 0
 
---Enable early mothership on Katina [NOT WORKING BETA 4]
-enable_early_katina = 0
-
 --enable randomization at start before corneria
 enable_early_randomization = 0
 
@@ -32,7 +29,7 @@ enable_star_wolf_katina = 0
 
 
 --Variable settings, do not change
-local debugMode = 1
+local debugMode = 0
 
 --Stage IDs
 local pCor = 0
@@ -111,6 +108,7 @@ local portraitChange = 0
 local orP = 0
 local lastSpeaker = 0
 local expertModeToggle = 0
+local randomMusic = 0
 
 
 --New Portraits
@@ -141,6 +139,7 @@ local oVWolf = 0
 local oVLeon = 0
 local oVPigma = 0
 local oVAndrew = 0
+local pChange = 0
 
 
 local newCorneria = 0
@@ -184,6 +183,13 @@ local soundID = tonumber(memory.read_s16_be(0x0C2F06, "RDRAM"))
 local mapStatus = 0
 local ePowerUps = {322, 322, 322, 322, 322, 322, 324, 324, 324, 324, 324, 324, 325, 325, 325, 325, 325, 325, 327, 327, 327, 327, 327, 327, 335, 336, 336, 336, 336, 336, 336, 337, 337, 337, 337, 337, 337}
 local expertMode = {0, 1}
+local music = {65,60,58,43,36,34,19,18,14,12,11,10,9,8,7,6,5,4,3,2}
+--bill: 55
+--katt 54
+--cor opening demo 50
+--cor opening demo 
+local randomSong = 0
+local randomPort = 0
 
 
 
@@ -543,6 +549,9 @@ function getInfo()
     playerMode = tonumber(memory.read_s32_be(0x16D868, "RDRAM"))
     mapStatus = tonumber(memory.read_s32_be(0x1C37B4, "RDRAM"))
     checkPortrait = tonumber(memory.read_s16_be(0x16DBD8, "RDRAM"))
+    mainMenu = tonumber(memory.read_s32_be(0x16D6A4, "RDRAM"))
+    checkSpeak = tonumber(memory.readbyte(0x16DBC0, "RDRAM"))
+    soundID = tonumber(memory.read_s16_be(0x0C2F06, "RDRAM"))
 end
 
 
@@ -605,6 +614,76 @@ function assignNew()
 end
 
 
+function lastspeaking()
+    if lastSpeaker ~= checkPortrait then
+        lastSpeaker = checkPortrait
+    end
+end
+
+
+
+
+
+function randomPortraits()
+        corneria = {16880, 0, 16800, 16672, 17076, 17352, 17116, 17056}
+        meteo = {16880, 0, 16800, 16672, 17076, 17352, 17096}
+        fortuna = {16880, 0, 16800, 16672, 17076, 17352, 17224, 17244, 17234, 17254}
+        katina = {16880, 0, 16800, 16672, 17076, 17352, 17194, 16928, 17264, 17282, 17274, 17287}
+        sx = {16880, 0, 16800, 16672, 17076, 17352, 17194, 17174}
+        titania = {16880, 0, 16800, 16672, 17076, 17352}
+        bolse = {16880, 0, 16800, 16672, 17076, 17352, 17224, 17244, 17234, 17254}
+        v1 = {16880, 0, 16800, 16672, 17076, 17352, 16988}
+        sy = {16880, 0, 16800, 16672, 17076, 17352, 17184}
+        solar = {16880, 0, 16800, 16672, 17076, 17352, 17174}
+        aquas = {16880, 0, 16800, 16672, 17076, 17352}
+        zoness = {16880, 0, 16800, 16672, 17076, 17352, 16928, 17154}
+        macbeth = {16880, 0, 16800, 16672, 17076, 17352, 17214, 16928}
+        a6 = {16880, 0, 16800, 16672, 17076, 17352, 16988, 17204, 17136}
+        sz = {16880, 0, 16800, 16672, 17076, 17352, 16928}
+        v2 = {16880, 0, 16800, 16672, 17076, 17352, 17264, 17282, 17274, 17287}
+        tunnel = {0, 17352, 16988}
+        if playerStage == pCor then
+            randomPortrait = tonumber(corneria[math.random(#corneria)])
+        elseif playerStage == pMet then
+            randomPortrait = tonumber(meteo[math.random(#meteo)])
+        elseif playerStage == pAr6 then
+            randomPortrait = tonumber(a6[math.random(#a6)])
+        elseif playerStage == pSey then
+            randomPortrait = tonumber(sy[math.random(#sy)])
+        elseif playerStage == pVe1 then
+            randomPortrait = tonumber(v1[math.random(#v1)])
+        elseif playerStage == pSol then
+            randomPortrait = tonumber(solar[math.random(#solar)])
+        elseif playerStage == pZon then
+            randomPortrait = tonumber(zoness[math.random(#zoness)])
+        elseif playerStage == pV1T then
+            randomPortrait = tonumber(tunnel[math.random(#tunnel)])
+        elseif playerStage == pMac then
+            randomPortrait = tonumber(macbeth[math.random(#macbeth)])
+        elseif playerStage == pTit then
+            randomPortrait = tonumber(titania[math.random(#titania)])
+        elseif playerStage == pAqu then
+            randomPortrait = tonumber(aquas[math.random(#aquas)])
+        elseif playerStage == pFor then
+            randomPortrait = tonumber(fortuna[math.random(#fortuna)])
+        elseif playerStage == pKat then
+            randomPortrait = tonumber(katina[math.random(#katina)])
+        elseif playerStage == pBol then
+            randomPortrait = tonumber(bolse[math.random(#bolse)])
+        elseif playerStage == pSeZ then
+            randomPortrait = tonumber(sz[math.random(#sz)])
+        elseif playerStage == pVe2 then
+            randomPortrait = tonumber(v2[math.random(#v2)])
+        else
+            randomPortrait = tonumber(corneria[math.random(#corneria)])
+        end
+end
+
+
+
+
+
+
 
 
 
@@ -612,178 +691,41 @@ end
 
 
 function speaker()
+    spoke = 0
     if portraitChange == 1 then
         assignNew()
         portraitChange = 0
+        speaking = 1
     end
-    if orP == 0 then
-        lastSpeaker = checkPortrait
+    if checkPortrait == fox and speaking == 1 and spoke == 0 then
+        speaking = "FOX"
+        memory.write_s16_be(0x16DBD8, oFox, "RDRAM")
+        speaking = 0
+        spoke = 1
+    elseif checkPortrait == peppy and speaking == 1 and spoke == 0 then
+        speaking = "PEPPY"
+        memory.write_s16_be(0x16DBD8, oPeppy, "RDRAM")
+        speaking = 0
+        spoke = 1
+    elseif checkPortrait == slippy and speaking == 1 and spoke == 0 then
+        speaking = "SLIPPY"
+        memory.write_s16_be(0x16DBD8, oSlippy, "RDRAM")
+        speaking = 0
+        spoke = 1
+    elseif checkPortrait == falco and speaking == 1 and spoke == 0 then
+        speaking = "FALCO"
+        memory.write_s16_be(0x16DBD8, oFalco, "RDRAM")
+        speaking = 0
+        spoke = 1
     end
-    if tonumber(memory.read_s16_be(0x0C2F06, "RDRAM")) > 2 then
-        if orP == 1 then
-            if lastSpeaker == fox then
-                    lastSpeaker = fox
-                    speaking = "FOX"
-                    memory.write_s16_be(0x16DBD8, oFox, "RDRAM")
-                    orP = 0
-            elseif lastSpeaker == peppy then
-                    lastSpeaker = peppy
-                    speaking = "PEPPY"
-                    memory.write_s16_be(0x16DBD8, oPeppy, "RDRAM")
-                    orP = 0
-            elseif lastSpeaker == slippy then
-                    lastSpeaker = slippy
-                    speaking = "SLIPPY"
-                    memory.write_s16_be(0x16DBD8, oSlippy, "RDRAM")
-                    orP = 0
-            elseif lastSpeaker == falco then
-                    lastSpeaker = falco
-                    speaking = "FALCO"
-                    memory.write_s16_be(0x16DBD8, oFalco, "RDRAM")
-                    orP = 0
-            elseif lastSpeaker == katt then
-                if orP == 1 then
-                    speaking = "KATT"
-                    memory.write_s16_be(0x16DBD8, oKatt, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == james then
-                if orP == 1 then
-                    speaking = "JAMES"
-                    memory.write_s16_be(0x16DBD8, oJames, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == rob then
-                if orP == 1 then
-                    speaking = "ROB"
-                    memory.write_s16_be(0x16DBD8, oRob, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == corBoss1 then
-                if orP == 1 then
-                    speaking = "CORN. BOSS 1"
-                    memory.write_s16_be(0x16DBD8, oCorBoss1, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == corBoss2 then
-                if orP == 1 then
-                    speaking = "CORN. BOSS 2"
-                    memory.write_s16_be(0x16DBD8, oCorBoss2, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == seyBoss then
-                if orP == 1 then
-                    speaking = "SEY. BOSS"
-                    memory.write_s16_be(0x16DBD8, oSeyBoss, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == metBoss then
-                if orP == 1 then
-                    speaking = "METEO BOSS"
-                    memory.write_s16_be(0x16DBD8, oMetBoss, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == sexBoss then
-                if orP == 1 then
-                    speaking = "SEX BOSS"
-                    memory.write_s16_be(0x16DBD8, oSexBoss, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == zonBoss then
-                if orP == 1 then
-                    speaking = "ZONESS BOSS"
-                    memory.write_s16_be(0x16DBD8, oZonBoss, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == andross then
-                if orP == 1 then
-                    speaking = "ANDROSS"
-                    memory.write_s16_be(0x16DBD8, oAndross, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == subBoss1 then
-                if orP == 1 then
-                    speaking = "SUB. BOSS 1"
-                    memory.write_s16_be(0x16DBD8, oSubBoss1, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == subBoss2 then
-                if orP == 1 then
-                    speaking = "SUB. BOSS 2"
-                    memory.write_s16_be(0x16DBD8, oSubBoss2, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == macBoss then
-                if orP == 1 then
-                    speaking = "MACBETH BOSS"
-                    memory.write_s16_be(0x16DBD8, oMacBoss, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == bill then
-                if orP == 1 then
-                    speaking = "BILL"
-                    memory.write_s16_be(0x16DBD8, oBill, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == wolf then
-                if orP == 1 then
-                    speaking = "F. WOLF"
-                    memory.write_s16_be(0x16DBD8, oWolf, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == leon then
-                if orP == 1 then
-                    speaking = "F. LEON"
-                    memory.write_s16_be(0x16DBD8, oLeon, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == pigma then
-                if orP == 1 then
-                    speaking = "F. PIGMA"
-                    memory.write_s16_be(0x16DBD8, oPigma, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == andrew then
-                if orP == 1 then
-                    speaking = "F. ANDREW"
-                    memory.write_s16_be(0x16DBD8, oAndrew, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == vWolf then
-                if orP == 1 then
-                    speaking = "V. WOLF"
-                    memory.write_s16_be(0x16DBD8, oVWolf, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == vLeon then
-                if orP == 1 then
-                    speaking = "V. LEON"
-                    memory.write_s16_be(0x16DBD8, oVLeon, "RDRAM")
-                    orP = 0
-                end
-            elseif lastSpeaker == vPigma then
-                    speaking = "V. PIGMA"
-                    memory.write_s16_be(0x16DBD8, oVPigma, "RDRAM")
-                    orP = 0
-            elseif lastSpeaker == vAndrew then
-                if orP == 1 then
-                    speaking = "V. ANDREW"
-                    memory.write_s16_be(0x16DBD8, oVAndrew, "RDRAM")
-                    orP = 0
-                end
-            end
-        end
-    end
-    orP = 1
+    spoke = 0
+    speaking = 1
 end
 
 
 
 function debugInfo()
     if debugMode == 1 then
-        --debugText = "DEBUG IS ON!"
-        
-        --debugText = "pCount: " ..pCount.. " oStage: " ..oldStage.. " nStage: " ..nextPlanet.. " cStage: " ..playerStage.. " getNew: " ..obtainNew.. " oLife: " ..oldLives.. " pLife: " ..playerLives.. " cLife: " ..checkLives.. " mStatus: " ..mapStatus
         gui.text(0,0, "SF64:RAND. DEBUG INFORMATION:")
         gui.text(0,10,"-----------------------------")
         
@@ -827,9 +769,6 @@ function debugInfo()
         gui.text(0,620,"Speaking: ")
         gui.text(0,630,"--------")
         gui.text(0,640,"Portrait ID: " ..checkPortrait)
-        gui.text(0,660,"Speaking: " ..speaking)
-        gui.text(0,680,"Portrait Check: " ..portraitChange)
-        gui.text(0,700,"Last Speaker:" ..lastSpeaker)
         
         
         apSize = 0
@@ -848,12 +787,10 @@ function debugInfo()
             gui.text(0,spacing, inList)
         end]]--
         gui.text(0,900,"Expert Mode: " ..tonumber(memory.read_s32_be(0x16D868, "RDRAM")))
+        gui.text(0,920,"Song:" ..randomSong)
         
     end
 end
-
-
-
 
 --Get ending sequence
 while true do
@@ -890,25 +827,66 @@ while true do
     debugInfo()
     adv()
     
+    if mainMenu == 3 then
+        memory.write_s16_be(0x0AD960, 9221, "RDRAM")
+        if randomMusic == 0 then
+            memory.write_s16_be(0x0AD960, 9221, "RDRAM")
+            emu.frameadvance()
+            randomSong = tonumber(music[math.random(#music)])
+            randomMusic = 1
+            memory.write_s16_be(0x0AD962, randomSong, "RDRAM")
+            emu.frameadvance()
+            memory.write_s16_be(0x0AD962, randomSong, "RDRAM")
+        end
+    end
+    
+    
     if playerState1 == 1 or playerState2 == 1 then
+        randomMusic = 0
+        
+        if randomMusic == 0 then
+            memory.write_s16_be(0x0AD960, 9221, "RDRAM")
+            emu.frameadvance()
+            randomSong = tonumber(music[math.random(#music)])
+            randomMusic = 1
+            memory.write_s16_be(0x0AD962, randomSong, "RDRAM")
+            emu.frameadvance()
+            memory.write_s16_be(0x0AD962, randomSong, "RDRAM")
+        end
+        
         if enable_star_wolf_katina == 1 then
             swKatina()
         end
-        portraitChange = 1
-        orP = 1
-        speaker()
         if enable_expert_mode == 1 then
            expertModeToggle = 1 
         end
     end
     
+    
     if playerState1 == 2 or playerState2 == 2 then
-        speaker()
+        if pChange == 0 then
+            randomPortraits()
+            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
+            pChange = 1
+        end
+        if soundID < 2 then
+            pChange = 0    
+        end
     end
     
+    
     if playerState1 == 3 or playerState2 == 3 then
-        speaker()
         randomPickUp()
+        
+        if pChange == 0 then
+            randomPortraits()
+            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
+            pChange = 1
+        end
+        if soundID < 2 then
+            pChange = 0    
+        end
+        
         if expertModeToggle == 1 then
             expertModeToggle = 0
             getExpert = tonumber(expertMode[math.random(#expertMode)])
@@ -929,7 +907,6 @@ while true do
     
     
     if playerState1 == 7 then
-        speaker()
         --Record the old stage
         oldStage = playerStage
         if pCount < 5 then
@@ -940,7 +917,6 @@ while true do
     end
    
     if playerState2 == 7 then
-        speaker()
         --Record the old stage
         oldStage = playerStage
         if pCount < 5 then
@@ -949,9 +925,11 @@ while true do
         checkLives = 1
 
     end
+    
    
     --Collect information for the next stage
 
+    
     if mapStatus == 3 then
         if checkLives == 1 then
             checkLives = 0

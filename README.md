@@ -1,6 +1,6 @@
 # Star-Fox-64-Randomizer
 
-VERSION: Beta 3
+CURRENT VERSION: BETA 4
 
 
 About software:

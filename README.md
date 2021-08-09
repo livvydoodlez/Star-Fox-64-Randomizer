@@ -13,7 +13,8 @@ Social Media:
 
   1. Twitter:  https://twitter.com/livvydoodlez
   2. Twitch:   https://twitch.tv/livvydoodlez
-  3. Discord:  Livvy#2986
+  4. Patreon:  https://www.patreon.com/livvydoodlez
+  5. Discord:  Livvy#2986
   
  REQUIREMENTS:
  

@@ -29,7 +29,7 @@ enable_star_wolf_katina = 0
 
 
 --Variable settings, do not change
-local debugMode = 0
+local debugMode = 1
 
 --Stage IDs
 local pCor = 0
@@ -190,6 +190,7 @@ local music = {65,60,58,43,36,34,19,18,14,12,11,10,9,8,7,6,5,4,3,2}
 --cor opening demo 
 local randomSong = 0
 local randomPort = 0
+local tickedMain = 0
 
 
 
@@ -552,6 +553,7 @@ function getInfo()
     mainMenu = tonumber(memory.read_s32_be(0x16D6A4, "RDRAM"))
     checkSpeak = tonumber(memory.readbyte(0x16DBC0, "RDRAM"))
     soundID = tonumber(memory.read_s16_be(0x0C2F06, "RDRAM"))
+    systemBoot = tonumber(memory.read_s32_be(0x16DC20, "RDRAM"))
 end
 
 
@@ -788,6 +790,7 @@ function debugInfo()
         end]]--
         gui.text(0,900,"Expert Mode: " ..tonumber(memory.read_s32_be(0x16D868, "RDRAM")))
         gui.text(0,920,"Song:" ..randomSong)
+        gui.text(0,940,"Initate Song List:" ..tonumber(memory.read_s16_be(0x01D488, "RDRAM")))
         
     end
 end
@@ -827,31 +830,39 @@ while true do
     debugInfo()
     adv()
     
+        
     if mainMenu == 3 then
-        memory.write_s16_be(0x0AD960, 9221, "RDRAM")
+        tickedMain = 1
+        randomMusic = 0
+        memory.write_s16_be(0x01D488, 9226, "RDRAM")
         if randomMusic == 0 then
-            memory.write_s16_be(0x0AD960, 9221, "RDRAM")
-            emu.frameadvance()
+            memory.write_s16_be(0x01D488, 9226, "RDRAM")
             randomSong = tonumber(music[math.random(#music)])
             randomMusic = 1
-            memory.write_s16_be(0x0AD962, randomSong, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x0AD962, randomSong, "RDRAM")
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+        end
+    end
+    
+    if tickedMain == 1 then
+        if systemBoot == 0 then
+            memory.write_s16_be(0x01D488, 9226, "RDRAM")
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         end
     end
     
     
     if playerState1 == 1 or playerState2 == 1 then
         randomMusic = 0
+        memory.writebyte(0x16E0A7, nextPlanet, "RDRAM")
+        
         
         if randomMusic == 0 then
-            memory.write_s16_be(0x0AD960, 9221, "RDRAM")
-            emu.frameadvance()
+            memory.write_s16_be(0x01D488, 9226, "RDRAM")
             randomSong = tonumber(music[math.random(#music)])
             randomMusic = 1
-            memory.write_s16_be(0x0AD962, randomSong, "RDRAM")
-            emu.frameadvance()
-            memory.write_s16_be(0x0AD962, randomSong, "RDRAM")
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         end
         
         if enable_star_wolf_katina == 1 then
@@ -864,6 +875,16 @@ while true do
     
     
     if playerState1 == 2 or playerState2 == 2 then
+        memory.writebyte(0x16E0A7, nextPlanet, "RDRAM")
+        
+        
+        if randomMusic == 0 then
+            memory.write_s16_be(0x01D488, 9226, "RDRAM")
+            randomSong = tonumber(music[math.random(#music)])
+            randomMusic = 1
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+        end
         if pChange == 0 then
             randomPortraits()
             memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
@@ -877,6 +898,13 @@ while true do
     
     if playerState1 == 3 or playerState2 == 3 then
         randomPickUp()
+        if randomMusic == 0 then
+            memory.write_s16_be(0x01D488, 9226, "RDRAM")
+            randomSong = tonumber(music[math.random(#music)])
+            randomMusic = 1
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+        end
         
         if pChange == 0 then
             randomPortraits()
@@ -905,8 +933,19 @@ while true do
         end
     end
     
+    if playerState1 == 22 and playerState2 == 0 or playerState2 == 6 then
+        randomMusic = 0
+    end
+    
     
     if playerState1 == 7 then
+        memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+        memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+        if pChange == 0 then
+            randomPortraits()
+            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
+            pChange = 1
+        end
         --Record the old stage
         oldStage = playerStage
         if pCount < 5 then
@@ -917,6 +956,13 @@ while true do
     end
    
     if playerState2 == 7 then
+        memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+        memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+        if pChange == 0 then
+            randomPortraits()
+            memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
+            pChange = 1
+        end
         --Record the old stage
         oldStage = playerStage
         if pCount < 5 then
@@ -931,6 +977,8 @@ while true do
 
     
     if mapStatus == 3 then
+        randomMusic = 0
+        memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         if checkLives == 1 then
             checkLives = 0
             oldLives = playerLives
@@ -951,7 +999,9 @@ while true do
     -- Apply the next planet
 
     if mapStatus == 4 then
+        randomMusic = 0
         --debugInfo()
+        memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         memory.writebyte(0x16E0A7, nextPlanet, "RDRAM")
     end
 end

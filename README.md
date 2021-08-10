@@ -34,4 +34,10 @@ Social Media:
   9. Play the game in full level randomization!
 
 
+CREDITS:
+
+Punk7890
+Drazil100
+
+
 THIS SOFTWARE IS RELEASED UNDER THE MIT LICENSE

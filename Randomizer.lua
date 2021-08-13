@@ -52,7 +52,7 @@ local pSeZ = 18
 local pVe2 = 19
 
 --Solar System Information
-local pCount = 0
+local pCount = 4
 local oldStage = 0
 local oldLives = 0
 local planetList = {pCor, pMet, pSeX, pSeY, pSol, pZon, pMac, pTit, pAqu, pFor, pKat, pSeZ, pTra}
@@ -290,218 +290,6 @@ function swKatina()
 end
 
 
-function corneria()
-    oFox = newCorneria[1]
-    oPeppy = newCorneria[2]
-    oSlippy = newCorneria[3]
-    oFalco = newCorneria[4]
-    oJames = newCorneria[5]
-    oRob = newCorneria[6]
-    oCorBoss1 = newCorneria[7]
-    oCorBoss2 = newCorneria[8]
-end
-
-
-
-function meteo()
-    oFox = newMeteo[1]
-    oPeppy = newMeteo[2]
-    oSlippy = newMeteo[3]
-    oFalco = newMeteo[4]
-    oJames = newMeteo[5]
-    oRob = newMeteo[6]
-    oMetBoss = newMeteo[7]
-end
-
-
-
-function fortuna()
-    oFox = newFortuna[1]
-    oPeppy = newFortuna[2]
-    oSlippy = newFortuna[3]
-    oFalco = newFortuna[4]
-    oJames = newFortuna[5]
-    oRob = newFortuna[6]
-    oWolf = newFortuna[7]
-    oLeon = newFortuna[8]
-    oPigma = newFortuna[9]
-    oAndrew = newFortuna[10]
-end
-
-
-
-function katina()
-    oFox = newKatina[1]
-    oPeppy = newKatina[2]
-    oSlippy = newKatina[3]
-    oFalco = newKatina[4]
-    oJames = newKatina[5]
-    oRob = newKatina[6]
-    oBill = newKatina[7]
-end
-
-
-
-function sx()
-    oFox = newSx[1]
-    oPeppy = newSx[2]
-    oSlippy = newSx[3]
-    oFalco = newSx[4]
-    oJames = newSx[5]
-    oRob = newSx[6]
-    oSexBoss = newSx[7]
-end
-
-
-
-function titania()
-    oFox = newTitania[1]
-    oPeppy = newTitania[2]
-    oSlippy = newTitania[3]
-    oFalco = newTitania[4]
-    oJames = newTitania[5]
-    oRob = newTitania[6]
-end
-
-
-
-function bolse()
-    oFox = newBolse[1]
-    oPeppy = newBolse[2]
-    oSlippy = newBolse[3]
-    oFalco = newBolse[4]
-    oJames = newBolse[5]
-    oWolf = newBolse[6]
-    oLeon = newBolse[7]
-    oPigma = newBolse[8]
-    oAndrew = newBolse[9]
-end
-
-
-
-function v1()
-    oFox = newV1[1]
-    oPeppy = newV1[2]
-    oSlippy = newV1[3]
-    oFalco = newV1[4]
-    oJames = newV1[5]
-    oRob = newV1[6]
-    oAndross = newv1[7]
-end
-
-
-
-function sy()
-    oFox = newSy[1]
-    oPeppy = newSy[2]
-    oSlippy = newSy[3]
-    oFalco = newSy[4]
-    oJames = newSy[5]
-    oRob = newSy[6]
-    oSeyBoss = newSy[7]
-end
-
-
-
-function solar()
-    oFox = newSolar[1]
-    oPeppy = newSolar[2]
-    oSlippy = newSolar[3]
-    oFalco = newSolar[4]
-    oJames = newSolar[5]
-    oRob = newSolar[6]
-    oBill = newSolar[7]
-end
-
-
-
-function aquas()
-    oFox = newAquas[1]
-    oPeppy = newAquas[2]
-    oSlippy = newAquas[3]
-    oFalco = newAquas[4]
-    oJames = newAquas[5]
-    oRob = newAquas[6]
-end
-
-
-
-function zoness()
-    oFox = newZoness[1]
-    oPeppy = newZoness[2]
-    oSlippy = newZoness[3]
-    oFalco = newZoness[4]
-    oJames = newZoness[5]
-    oRob = newZoness[6]
-    oKatt = newZoness[7]
-    oZonBoss = newZoness[8]
-end
-
-
-
-function macbeth()
-    oFox = newMacbeth[1]
-    oPeppy = newMacbeth[2]
-    oSlippy = newMacbeth[3]
-    oFalco = newMacbeth[4]
-    oJames = newMacbeth[5]
-    oRob = newMacbeth[6]
-    oKatt = newMacbeth[7]
-    oMacBoss = newMacbeth[8]
-end
-
-
-
-function a6()
-    oFox = newA6[1]
-    oPeppy = newA6[2]
-    oSlippy = newA6[3]
-    oFalco = newA6[4]
-    oJames = newA6[5]
-    oRob = newA6[6]
-    oSubBoss1 = newA6[7]
-    oSubBoss2 = newA6[8]
-    oAndross = newA6[9]
-end
-
-
-
-
-function sz()
-    oFox = newSZ[1]
-    oPeppy = newSZ[2]
-    oSlippy = newSZ[3]
-    oFalco = newSZ[4]
-    oJames = newSZ[5]
-    oRob = newSZ[6]
-    oKatt = newSZ[7]
-end
-
-
-
-function v2()
-    oFox = newV2[1]
-    oPeppy = newV2[2]
-    oSlippy = newV2[3]
-    oFalco = newV2[4]
-    oJames = newV2[5]
-    oRob = newV2[6]
-    oVWolf = newV2[7]
-    oVLeon = newV2[8]
-    oVPigma = newV2[9]
-    oVAndrew = newV2[10]
-end
-
-
-
-function tunnel()
-    oFox = newV2[1]
-    oJames = newV2[2]
-    oAndross = newV2[3]
-end
-
-
-
 
 --Advance a frame
 function adv()
@@ -527,6 +315,9 @@ function getPlanet()
         if randomPlanet == oldStage then
             if enable_ending_stages == 1 then
                 randomPlanet = tonumber(allPlanets[math.random(#allPlanets)])
+                if randomPlanet == pAr6 or randomPlanet == pBol then
+                   pCount = 5 
+                end
             else
                 randomPlanet = tonumber(aPlanets[math.random(#aPlanets)])
             end
@@ -790,7 +581,6 @@ function debugInfo()
         end]]--
         gui.text(0,900,"Expert Mode: " ..tonumber(memory.read_s32_be(0x16D868, "RDRAM")))
         gui.text(0,920,"Song:" ..randomSong)
-        gui.text(0,940,"Initate Song List:" ..tonumber(memory.read_s16_be(0x01D488, "RDRAM")))
         
     end
 end
@@ -830,7 +620,6 @@ while true do
     debugInfo()
     adv()
     
-        
     if mainMenu == 3 then
         tickedMain = 1
         randomMusic = 0
@@ -844,24 +633,25 @@ while true do
         end
     end
     
+    
+    
     if tickedMain == 1 then
         if systemBoot == 0 then
             memory.write_s16_be(0x01D488, 9226, "RDRAM")
             memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         end
-    end
-    
+    end  
     
     if playerState1 == 1 or playerState2 == 1 then
         randomMusic = 0
-        memory.writebyte(0x16E0A7, nextPlanet, "RDRAM")
-        
         
         if randomMusic == 0 then
             memory.write_s16_be(0x01D488, 9226, "RDRAM")
+            emu.frameadvance()
             randomSong = tonumber(music[math.random(#music)])
             randomMusic = 1
             memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+            emu.frameadvance()
             memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         end
         
@@ -875,14 +665,13 @@ while true do
     
     
     if playerState1 == 2 or playerState2 == 2 then
-        memory.writebyte(0x16E0A7, nextPlanet, "RDRAM")
-        
-        
         if randomMusic == 0 then
             memory.write_s16_be(0x01D488, 9226, "RDRAM")
+            emu.frameadvance()
             randomSong = tonumber(music[math.random(#music)])
             randomMusic = 1
             memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+            emu.frameadvance()
             memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         end
         if pChange == 0 then
@@ -898,11 +687,14 @@ while true do
     
     if playerState1 == 3 or playerState2 == 3 then
         randomPickUp()
+        
         if randomMusic == 0 then
             memory.write_s16_be(0x01D488, 9226, "RDRAM")
+            emu.frameadvance()
             randomSong = tonumber(music[math.random(#music)])
             randomMusic = 1
             memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+            emu.frameadvance()
             memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         end
         
@@ -933,18 +725,16 @@ while true do
         end
     end
     
-    if playerState1 == 22 and playerState2 == 0 or playerState2 == 6 then
-        randomMusic = 0
-    end
-    
     
     if playerState1 == 7 then
-        memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         if pChange == 0 then
             randomPortraits()
             memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
             pChange = 1
+        end
+        if soundID < 2 then
+            pChange = 0    
         end
         --Record the old stage
         oldStage = playerStage
@@ -957,11 +747,13 @@ while true do
    
     if playerState2 == 7 then
         memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
-        memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         if pChange == 0 then
             randomPortraits()
             memory.write_s16_be(0x16DBD8, randomPortrait, "RDRAM")
             pChange = 1
+        end
+        if soundID < 2 then
+            pChange = 0    
         end
         --Record the old stage
         oldStage = playerStage
@@ -978,7 +770,13 @@ while true do
     
     if mapStatus == 3 then
         randomMusic = 0
-        memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+        if randomMusic == 0 then
+            memory.write_s16_be(0x01D488, 9226, "RDRAM")
+            randomSong = tonumber(music[math.random(#music)])
+            randomMusic = 1
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+        end
         if checkLives == 1 then
             checkLives = 0
             oldLives = playerLives
@@ -1000,8 +798,15 @@ while true do
 
     if mapStatus == 4 then
         randomMusic = 0
+        if randomMusic == 0 then
+            memory.write_s16_be(0x01D488, 9226, "RDRAM")
+            randomSong = tonumber(music[math.random(#music)])
+            randomMusic = 1
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+            memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
+        end
         --debugInfo()
-        memory.write_s16_be(0x01D48A, randomSong, "RDRAM")
         memory.writebyte(0x16E0A7, nextPlanet, "RDRAM")
     end
+        
 end
